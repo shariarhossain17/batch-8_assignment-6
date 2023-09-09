@@ -1,81 +1,110 @@
 const loadAllCategories = async () => {
     const res = await fetch("http://localhost:8800/dress/categories");
     const data = await res.json();
-    const allCategories = data.data;
 
-    const categoryContainer = document.getElementById("category-container");
-    allCategories.forEach((category) => {
-        const div = document.createElement("div");
-        const categoryId = category.category_id; // Store the category_id in a variable
-        div.innerHTML = `
-            <a onclick="loadCategoriesDataById(${categoryId})" class="btn bg-gray-300 hover:bg-[#FF1F3D] text-black hover:text-white border-0 md:px-6 px-5 rounded capitalize text-base">${category.category}</a>
-        `;
-        categoryContainer.appendChild(div);
-    });
-};
+    
 
-let allVideos;
+    // itterate array and show button on display
+    const categorySection = document.getElementById("category");
+    data.data.forEach((categories) => {
+       const div = document.createElement("div");
 
-const loadCategoriesDataById = async (id) => {
-    const res = await fetch(`http://localhost:8800/dress/categories/${id}`);
-    const data = await res.json();
-     allVideos = data.data;
-    showDisplayData(allVideos);
-};
-
-loadCategoriesDataById(1000)
-
-const showDisplayData = (data) => {
-    const videoContainer = document.getElementById("video-container");
-    const errorPage = document.getElementById("error-page");
-
-    // for remove the data
-    videoContainer.innerText="";
-    if (data.length == 0) {
-
-        errorPage.classList.remove("hidden")
-    } else {
-
-        errorPage.classList.add("hidden")
-        data.forEach((video) => {
-
-            const div = document.createElement("div");
-
-            div.innerHTML = `
-            <div class="card w-96 bg-base-100 shadow-xl px-4 py-2 rounded-lg">
-             <figure><img class="w-[300px] h-[300px]" src="${video.thumbnail}" alt="Shoes" /></figure>
-           <div class="card-body">
-            <h2 class="card-title">${video.brand}</h2>
-            <h2>$${video.others.price}</h2>
-            <p>Shop owner: ${video.shop[0].owner}</p>
-            <p>Shop Name: ${video.shop[0].shop_name}</p>
-            <p>Reviews: ${video.shop[0].reviews ?video.shop[0].reviews:"no reviews yet"}</p>
+       div.innerHTML = `
         
-        </div>
-        </div>
-           </div>
-            `;
+       <a onclick="loadDataCategoryById(${categories.category_id})" class="btn btn-primary">${categories.category}</a>
+       `
 
-            videoContainer.appendChild(div)
-        });
-    }
-};
-
-const sortAllData = () => {
-    const sortData = allVideos.sort((a, b) => {
-        const reviewsA = parseInt(a.shop[0].reviews) || 0;
-        const reviewsB = parseInt(b.shop[0].reviews) || 0;
-
-        console.log('reviewsA:', reviewsA);
-        console.log('reviewsB:', reviewsB);
-
-        return reviewsB - reviewsA;
-    });
-
-    showDisplayData(sortData)
+       categorySection.appendChild(div);
+    })
 }
 
 
+
+let sortData;
+
+const loadDataCategoryById = async (id) => {
+    const res = await fetch(`http://localhost:8800/dress/categories/${id}`);
+    const data = await res.json();
+
+    const videosData=data.data;
+    sortData=videosData;
+    displayShowData(videosData)
+
+}
+
+
+loadDataCategoryById(1000);
+
+
+const video = {
+    thumbnail:"",
+    others:{
+        price:10
+    },
+    shop:[
+        {
+            shop_name: 'Easy shop house',
+             reviews: '5'
+        }
+    ]
+}
+const displayShowData = (videosData) => {
+
+
+    // videos data 
+    const displayData= document.getElementById("display");
+
+    displayData.innerText ="";
+
+    const errorSection = document.getElementById("error")
+    if(videosData.length==0){
+    
+        errorSection.classList.remove("hidden")
+    }
+    videosData.forEach((video) => {
+        errorSection.classList.add("hidden")
+        const div=document.createElement("div");
+
+        div.innerHTML = `
+        <div class="card w-96 bg-base-100 shadow-xl">
+  <figure><img class="h-[300px] w-[300px]" src="${video.thumbnail}" alt="Shoes" /></figure>
+  <div class="card-body">
+    <h2 class="card-title">${video.brand}</h2>
+   <div class="flex">
+   <span class="font-bold">Price:</span> <span>$${video.others.price}</span>
+   </div>
+   <div class="flex">
+   <span class="font-bold">Owner:</span> <span>${video.shop[0].owner}</span>
+   </div>
+   <div class="flex">
+   <span class="font-bold">Shop Name:</span> <span>${video.shop[0].shop_name}</span>
+   </div>
+   <div class="flex">
+   <span class="font-bold">Reviews:</span> <span>${video.shop[0].reviews ?video.shop[0].reviews :"no reviews yet"}</span>
+   </div>
+  </div>
+</div>
+        `
+        displayData.appendChild(div);
+    })
+
+}
+
+
+const handleSort = () => {
+   const updateData = sortData.sort((a,b) => {
+
+    const reviewA= parseInt(a.shop[0].reviews) ||0;
+    const reviewB= parseInt(b.shop[0].reviews) ||0;
+
+
+    // ছোট থেকে বড় a -b
+    // বড় থেকে ছোট b-a
+    return reviewB- reviewA  ;
+   }) 
+
+  displayShowData(updateData);
+}
 
 
 loadAllCategories();

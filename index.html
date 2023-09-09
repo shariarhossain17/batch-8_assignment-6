@@ -20,30 +20,25 @@
   </head>
 
   <body class="">
-    <main>
-      <section>
-        <button
-          onclick="sortAllData()"
-          class="btn btn-primary block mx-auto mt-10"
-        >
-          Sort
-        </button>
-      </section>
-      <!-- category section -->
-      <section>
-        <div
-          id="category-container"
-          class="flex gap-4 justify-center mt-10"
-        ></div>
-      </section>
+    <div>
+      <button
+        onclick="handleSort()"
+        class="btn btn-secondary mt-10 block mx-auto"
+      >
+        Sort
+      </button>
+    </div>
+    <!-- category section -->
+    <section
+      id="category"
+      class="flex items-center justify-center gap-8 mt-20"
+    ></section>
 
-      <!-- display data -->
-      <section>
-        <div id="video-container" class="grid grid-cols-3 mt-12 gap-4"></div>
-
-        <div id="error-page" class="hidden">No data found</div>
-      </section>
-    </main>
+    <section id="error" class="hidden">
+      <h1 class="text-3xl text-center mt-20 text-red-700">No data found</h1>
+    </section>
+    <!-- show display data -->
+    <section class="grid grid-cols-3 mt-20 gap-8" id="display"></section>
     <script src="./script/index.js"></script>
   </body>
 </html>
